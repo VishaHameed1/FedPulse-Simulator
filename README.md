@@ -383,9 +383,9 @@ Round 5: Global Accuracy ≈ 88%
 
 ## 🎓 For Project Presentation
 
-**You can show your supervisor:**
+**supervisor Sir Uzair Hassan:**
 
-> "I've built exactly what you described! The system is a complete **Federated Learning Simulator** where:
+> "The system is a complete **Federated Learning Simulator** where:
 > 
 > 1. **Zero Server Data**: The server only receives model weights. Raw data stays 100% on the clients. [Show dashboard chart: Server 0 BYTES]
 > 
@@ -403,7 +403,9 @@ Educational project for learning Federated Learning & Data Privacy.
 
 ## 👨‍💻 Author
 
-Final Year Project - AI/ML & Healthcare Data Privacy Focus
+Semester Project - AI/ML & Healthcare Data Privacy Focus
+@vishahameed1
+@hadiqa-ehsan
 
 ---
 
