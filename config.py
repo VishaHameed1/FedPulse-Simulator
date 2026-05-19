@@ -47,78 +47,78 @@ SERVER_PORT = 8080
 
 # For Breast Cancer dataset (30 features, 2 classes)
 BREAST_CANCER_CONFIG = {
-    "input_size": 30,
-    "num_classes": 2,
-    "dataset_name": "Breast Cancer Wisconsin (Diagnostic)",
-    "num_samples": 569,
-    "num_features": 30,
+    "input_size": 30,
+    "num_classes": 2,
+    "dataset_name": "Breast Cancer Wisconsin (Diagnostic)",
+    "num_samples": 569,
+    "num_features": 30,
 }
 
 # For Iris dataset (4 features, 3 classes)
 IRIS_CONFIG = {
-    "input_size": 4,
-    "num_classes": 3,
-    "dataset_name": "Iris Classification",
-    "num_samples": 150,
-    "num_features": 4,
+    "input_size": 4,
+    "num_classes": 3,
+    "dataset_name": "Iris Classification",
+    "num_samples": 150,
+    "num_features": 4,
 }
 
 # For Synthetic dataset (10 features, 2 classes)
 SYNTHETIC_CONFIG = {
-    "input_size": 10,
-    "num_classes": 2,
-    "dataset_name": "Synthetic Binary Classification",
-    "num_samples": 1000,
-    "num_features": 10,
+    "input_size": 10,
+    "num_classes": 2,
+    "dataset_name": "Synthetic Binary Classification",
+    "num_samples": 1000,
+    "num_features": 10,
 }
 
 def get_dataset_config(dataset_type: str = None):
-    """Get configuration for specified dataset"""
-    dataset_type = dataset_type or DATASET_TYPE
-    
-    configs = {
-        "breast_cancer": BREAST_CANCER_CONFIG,
-        "iris": IRIS_CONFIG,
-        "synthetic": SYNTHETIC_CONFIG,
-    }
-    
-    if dataset_type not in configs:
-        raise ValueError(f"Unknown dataset: {dataset_type}. Available: {list(configs.keys())}")
-    
-    return configs[dataset_type]
+    """Get configuration for specified dataset"""
+    dataset_type = dataset_type or DATASET_TYPE
+    
+    configs = {
+        "breast_cancer": BREAST_CANCER_CONFIG,
+        "iris": IRIS_CONFIG,
+        "synthetic": SYNTHETIC_CONFIG,
+    }
+    
+    if dataset_type not in configs:
+        raise ValueError(f"Unknown dataset: {dataset_type}. Available: {list(configs.keys())}")
+    
+    return configs[dataset_type]
 
 def get_model_config(model_type: str = None):
-    """Get configuration for specified model"""
-    model_type = model_type or MODEL_TYPE
-    
-    configs = {
-        "simple_nn": {
-            "name": "Simple Neural Network (3-Layer MLP)",
-            "architecture": "128 -> 64 -> output",
-            "description": "Standard fully-connected neural network",
-        },
-        "cnn": {
-            "name": "Convolutional Neural Network",
-            "architecture": "Conv -> Conv -> FC -> output",
-            "description": "CNN for image/spatial data",
-        },
-        "logistic_regression": {
-            "name": "Logistic Regression",
-            "architecture": "Direct mapping to output",
-            "description": "Simple linear classifier",
-        },
-    }
-    
-    if model_type not in configs:
-        raise ValueError(f"Unknown model: {model_type}. Available: {list(configs.keys())}")
-    
-    return configs[model_type]
+    """Get configuration for specified model"""
+    model_type = model_type or MODEL_TYPE
+    
+    configs = {
+        "simple_nn": {
+            "name": "Simple Neural Network (3-Layer MLP)",
+            "architecture": "128 -> 64 -> output",
+            "description": "Standard fully-connected neural network",
+        },
+        "cnn": {
+            "name": "Convolutional Neural Network",
+            "architecture": "Conv -> Conv -> FC -> output",
+            "description": "CNN for image/spatial data",
+        },
+        "logistic_regression": {
+            "name": "Logistic Regression",
+            "architecture": "Direct mapping to output",
+            "description": "Simple linear classifier",
+        },
+    }
+    
+    if model_type not in configs:
+        raise ValueError(f"Unknown model: {model_type}. Available: {list(configs.keys())}")
+    
+    return configs[model_type]
 
 # Verify configuration on import
 if __name__ == "__main__":
-    print("✓ Configuration validated")
-    print(f"Current Setup:")
-    print(f"  Dataset: {DATASET_TYPE}")
-    print(f"  Model: {MODEL_TYPE}")
-    print(f"  Clients: {NUM_CLIENTS}")
-    print(f"  Rounds: {NUM_ROUNDS}")
+    print("✓ Configuration validated")
+    print(f"Current Setup:")
+    print(f"  Dataset: {DATASET_TYPE}")
+    print(f"  Model: {MODEL_TYPE}")
+    print(f"  Clients: {NUM_CLIENTS}")
+    print(f"  Rounds: {NUM_ROUNDS}")
