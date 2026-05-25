@@ -11,11 +11,11 @@ This makes the project a true "Simulator" that can adapt to any dataset/model
 
 # Dataset Configuration
 # Options: "breast_cancer", "iris", "synthetic"
-DATASET_TYPE = "breast_cancer"
+DATASET_TYPE = "iris"
 
 # Model Configuration  
 # Options: "simple_nn", "cnn", "logistic_regression"
-MODEL_TYPE = "simple_nn"
+MODEL_TYPE = "cnn"
 
 # ============================================================================
 # TRAINING CONFIGURATION
@@ -25,7 +25,7 @@ MODEL_TYPE = "simple_nn"
 NUM_CLIENTS = 3
 
 # Number of training rounds
-NUM_ROUNDS = 5
+NUM_ROUNDS = 10
 
 # Local training epochs per round
 EPOCHS_PER_ROUND = 1
@@ -37,9 +37,9 @@ BATCH_SIZE = 32
 LEARNING_RATE = 0.001
 
 # Server address and port
-SERVER_ADDRESS = "127.0.0.1:8080"
-SERVER_HOST = "0.0.0.0"
-SERVER_PORT = 8080
+SERVER_ADDRESS = "127.0.0.1:9000"
+SERVER_HOST = "127.0.0.1"
+SERVER_PORT = 9000
 
 # ============================================================================
 # MODEL ARCHITECTURE CONFIGURATION

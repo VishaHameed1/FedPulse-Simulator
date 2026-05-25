@@ -11,6 +11,8 @@ from typing import List, Tuple
 import torch
 import sys
 import os
+import json
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 class FlowerDeprecationFilter(logging.Filter):
@@ -29,6 +31,49 @@ from config import (
 )
 
 
+def save_training_metrics(round_num, accuracy):
+    """Save training metrics to file for dashboard"""
+    metrics_file = "training_metrics.json"
+    
+    if os.path.exists(metrics_file):
+        with open(metrics_file, 'r') as f:
+            data = json.load(f)
+    else:
+        data = {'rounds': [], 'accuracies': []}
+    
+    data['rounds'].append(round_num)
+    data['accuracies'].append(accuracy)
+    
+    with open(metrics_file, 'w') as f:
+        json.dump(data, f)
+    
+    print(f"📊 Metrics saved: Round {round_num}, Accuracy: {accuracy:.2f}%")
+
+
+class CustomFedAvg(FedAvg):
+    """Custom FedAvg that saves accuracy metrics from evaluation"""
+    
+    def aggregate_fit(self, rnd, results, failures):
+        aggregated_parameters, aggregated_metrics = super().aggregate_fit(rnd, results, failures)
+        return aggregated_parameters, aggregated_metrics
+    
+    def aggregate_evaluate(self, rnd, results, failures):
+        """This receives evaluation results from clients"""
+        accuracies = []
+        for _, res in results:
+            if hasattr(res, 'metrics') and res.metrics and 'accuracy' in res.metrics:
+                accuracies.append(res.metrics['accuracy'])
+        
+        if accuracies:
+            avg_accuracy = sum(accuracies) / len(accuracies)
+            print(f"\n{'='*50}")
+            print(f"🎯 Round {rnd} - Global Accuracy: {avg_accuracy:.2f}%")
+            print(f"{'='*50}")
+            save_training_metrics(rnd, avg_accuracy)
+        
+        return super().aggregate_evaluate(rnd, results, failures)
+
+
 class FederatedLearningServer:
     """
     Federated Learning Server - Aggregates weights from clients
@@ -44,9 +89,7 @@ class FederatedLearningServer:
         self.num_rounds = num_rounds
         self.dataset_type = DATASET_TYPE
         self.model_type = MODEL_TYPE
-        
-        # Print server configuration
-        self._print_server_config()
+        self.round_accuracies = []
     
     def _print_server_config(self):
         """Print server configuration on startup"""
@@ -81,23 +124,29 @@ class FederatedLearningServer:
     def start(self):
         """Start the Federated Learning server"""
         
-        # Define strategy - FedAvg is the standard for federated learning
-        strategy = FedAvg(
-            fraction_fit=1.0,  # Use all available clients
-            fraction_evaluate=0.0,  # No server-side evaluation
-            min_fit_clients=self.num_clients,  # Wait for all clients
+        if os.path.exists("training_metrics.json"):
+            os.remove("training_metrics.json")
+            print("🔄 Cleared previous training metrics\n")
+        
+        self._print_server_config()
+        
+        strategy = CustomFedAvg(
+            fraction_fit=1.0,
+            fraction_evaluate=1.0,
+            min_fit_clients=self.num_clients,
+            min_evaluate_clients=self.num_clients,
             min_available_clients=self.num_clients,
         )
         
         print(f"{'='*70}")
         print(f"🚀 STARTING FEDERATED LEARNING SERVER")
         print(f"{'='*70}")
-        print(f"Waiting for {self.num_clients} clients to connect...")
         print(f"Server Address: {SERVER_HOST}:{SERVER_PORT}")
+        print(f"Waiting for {self.num_clients} clients to connect...")
         print(f"\n⏳ Once all clients connect, training will begin automatically.")
-        print(f"   Each client trains locally → sends weights → server aggregates\n")
+        print(f"   Each client trains locally → sends weights → server aggregates")
+        print(f"\n📁 Metrics will be saved to: training_metrics.json\n")
         
-        # Start server
         fl.server.start_server(
             server_address=f"{SERVER_HOST}:{SERVER_PORT}",
             strategy=strategy,
@@ -106,14 +155,6 @@ class FederatedLearningServer:
 
 
 def start_server(num_clients: int = None, num_rounds: int = None):
-    """
-    Start the Federated Learning server
-    
-    Args:
-        num_clients: Number of clients to wait for (default from config)
-        num_rounds: Number of training rounds (default from config)
-    """
-    
     num_clients = num_clients or NUM_CLIENTS
     num_rounds = num_rounds or NUM_ROUNDS
     
